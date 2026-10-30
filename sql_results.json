@@ -1,0 +1,1074 @@
+{
+  "rows_loaded": 1200,
+  "queries": [
+    {
+      "id": "Q01",
+      "section": "A. Data overview",
+      "title": "Preview the first 10 orders",
+      "question": "What does an order record look like?",
+      "sql": "SELECT OrderID, Date, Product, Quantity, UnitPrice, TotalPrice, OrderStatus\nFROM orders\nORDER BY Date, OrderID\nLIMIT 10;",
+      "rows": 10,
+      "result": [
+        {
+          "OrderID": "ORD200112",
+          "Date": "2023-01-01",
+          "Product": "Monitor",
+          "Quantity": 1,
+          "UnitPrice": 410.6,
+          "TotalPrice": 410.6,
+          "OrderStatus": "Cancelled"
+        },
+        {
+          "OrderID": "ORD200236",
+          "Date": "2023-01-01",
+          "Product": "Monitor",
+          "Quantity": 1,
+          "UnitPrice": 318.81,
+          "TotalPrice": 318.81,
+          "OrderStatus": "Pending"
+        },
+        {
+          "OrderID": "ORD200848",
+          "Date": "2023-01-01",
+          "Product": "Chair",
+          "Quantity": 2,
+          "UnitPrice": 645.85,
+          "TotalPrice": 1291.7,
+          "OrderStatus": "Shipped"
+        },
+        {
+          "OrderID": "ORD200373",
+          "Date": "2023-01-02",
+          "Product": "Laptop",
+          "Quantity": 3,
+          "UnitPrice": 341.15,
+          "TotalPrice": 1023.45,
+          "OrderStatus": "Pending"
+        },
+        {
+          "OrderID": "ORD200645",
+          "Date": "2023-01-02",
+          "Product": "Laptop",
+          "Quantity": 2,
+          "UnitPrice": 150.05,
+          "TotalPrice": 300.1,
+          "OrderStatus": "Cancelled"
+        },
+        {
+          "OrderID": "ORD200881",
+          "Date": "2023-01-03",
+          "Product": "Tablet",
+          "Quantity": 2,
+          "UnitPrice": 448.85,
+          "TotalPrice": 897.7,
+          "OrderStatus": "Pending"
+        },
+        {
+          "OrderID": "ORD200000",
+          "Date": "2023-01-04",
+          "Product": "Monitor",
+          "Quantity": 5,
+          "UnitPrice": 570.62,
+          "TotalPrice": 2853.1,
+          "OrderStatus": "Shipped"
+        },
+        {
+          "OrderID": "ORD200698",
+          "Date": "2023-01-04",
+          "Product": "Laptop",
+          "Quantity": 2,
+          "UnitPrice": 388.22,
+          "TotalPrice": 776.44,
+          "OrderStatus": "Delivered"
+        },
+        {
+          "OrderID": "ORD200371",
+          "Date": "2023-01-05",
+          "Product": "Phone",
+          "Quantity": 5,
+          "UnitPrice": 307.76,
+          "TotalPrice": 1538.8,
+          "OrderStatus": "Pending"
+        },
+        {
+          "OrderID": "ORD200491",
+          "Date": "2023-01-05",
+          "Product": "Phone",
+          "Quantity": 5,
+          "UnitPrice": 420.7,
+          "TotalPrice": 2103.5,
+          "OrderStatus": "Pending"
+        }
+      ]
+    },
+    {
+      "id": "Q02",
+      "section": "A. Data overview",
+      "title": "Headline business numbers",
+      "question": "How big is the business in this dataset?",
+      "sql": "SELECT COUNT(*)                         AS total_orders,\n       COUNT(DISTINCT CustomerID)       AS unique_customers,\n       ROUND(SUM(TotalPrice), 2)        AS total_order_value,\n       ROUND(AVG(TotalPrice), 2)        AS avg_order_value,\n       MIN(TotalPrice)                  AS smallest_order,\n       MAX(TotalPrice)                  AS largest_order,\n       MIN(Date)                        AS first_order_date,\n       MAX(Date)                        AS last_order_date\nFROM orders;",
+      "rows": 1,
+      "result": [
+        {
+          "total_orders": 1200,
+          "unique_customers": 1189,
+          "total_order_value": 1264761.96,
+          "avg_order_value": 1053.97,
+          "smallest_order": 11.39,
+          "largest_order": 3456.4,
+          "first_order_date": "2023-01-01",
+          "last_order_date": "2025-06-30"
+        }
+      ]
+    },
+    {
+      "id": "Q03",
+      "section": "A. Data overview",
+      "title": "Integrity audit: duplicate OrderIDs",
+      "question": "Is every OrderID truly unique? (Project 1 gate, re-proved in SQL) Expected result: 0 rows.",
+      "sql": "SELECT OrderID, COUNT(*) AS occurrences\nFROM orders\nGROUP BY OrderID\nHAVING COUNT(*) > 1;",
+      "rows": 0,
+      "result": []
+    },
+    {
+      "id": "Q04",
+      "section": "B. Filtering with WHERE",
+      "title": "Unusually large orders (above the IQR fence)",
+      "question": "Which orders are the extreme high-value ones? ($3,330.41 is the Project 2 IQR upper fence)",
+      "sql": "SELECT OrderID, Date, Product, Quantity, UnitPrice, TotalPrice, OrderStatus\nFROM orders\nWHERE TotalPrice > 3330.41\nORDER BY TotalPrice DESC;",
+      "rows": 8,
+      "result": [
+        {
+          "OrderID": "ORD200789",
+          "Date": "2023-08-17",
+          "Product": "Tablet",
+          "Quantity": 5,
+          "UnitPrice": 691.28,
+          "TotalPrice": 3456.4,
+          "OrderStatus": "Delivered"
+        },
+        {
+          "OrderID": "ORD201122",
+          "Date": "2023-06-07",
+          "Product": "Monitor",
+          "Quantity": 5,
+          "UnitPrice": 678.19,
+          "TotalPrice": 3390.95,
+          "OrderStatus": "Returned"
+        },
+        {
+          "OrderID": "ORD200632",
+          "Date": "2023-05-02",
+          "Product": "Laptop",
+          "Quantity": 5,
+          "UnitPrice": 678.16,
+          "TotalPrice": 3390.8,
+          "OrderStatus": "Delivered"
+        },
+        {
+          "OrderID": "ORD200469",
+          "Date": "2023-11-26",
+          "Product": "Chair",
+          "Quantity": 5,
+          "UnitPrice": 676.98,
+          "TotalPrice": 3384.9,
+          "OrderStatus": "Cancelled"
+        },
+        {
+          "OrderID": "ORD200328",
+          "Date": "2023-02-28",
+          "Product": "Tablet",
+          "Quantity": 5,
+          "UnitPrice": 674.04,
+          "TotalPrice": 3370.2,
+          "OrderStatus": "Cancelled"
+        },
+        {
+          "OrderID": "ORD200107",
+          "Date": "2023-03-27",
+          "Product": "Printer",
+          "Quantity": 5,
+          "UnitPrice": 670.75,
+          "TotalPrice": 3353.75,
+          "OrderStatus": "Shipped"
+        },
+        {
+          "OrderID": "ORD200326",
+          "Date": "2024-07-01",
+          "Product": "Laptop",
+          "Quantity": 5,
+          "UnitPrice": 670.48,
+          "TotalPrice": 3352.4,
+          "OrderStatus": "Returned"
+        },
+        {
+          "OrderID": "ORD201065",
+          "Date": "2023-10-30",
+          "Product": "Printer",
+          "Quantity": 5,
+          "UnitPrice": 666.8,
+          "TotalPrice": 3334.0,
+          "OrderStatus": "Delivered"
+        }
+      ]
+    },
+    {
+      "id": "Q05",
+      "section": "B. Filtering with WHERE",
+      "title": "Delivered 2024 orders that used a coupon",
+      "question": "What are the biggest successfully delivered coupon orders of 2024?",
+      "sql": "SELECT OrderID, Date, Product, CouponCode, TotalPrice\nFROM orders\nWHERE OrderStatus = 'Delivered'\n  AND Date BETWEEN '2024-01-01' AND '2024-12-31'\n  AND CouponCode <> 'No Coupon'\nORDER BY TotalPrice DESC\nLIMIT 10;",
+      "rows": 10,
+      "result": [
+        {
+          "OrderID": "ORD200361",
+          "Date": "2024-06-29",
+          "Product": "Printer",
+          "CouponCode": "SAVE10",
+          "TotalPrice": 3299.25
+        },
+        {
+          "OrderID": "ORD200511",
+          "Date": "2024-03-15",
+          "Product": "Monitor",
+          "CouponCode": "WINTER15",
+          "TotalPrice": 2876.2
+        },
+        {
+          "OrderID": "ORD200578",
+          "Date": "2024-10-10",
+          "Product": "Monitor",
+          "CouponCode": "SAVE10",
+          "TotalPrice": 2830.35
+        },
+        {
+          "OrderID": "ORD200781",
+          "Date": "2024-01-10",
+          "Product": "Phone",
+          "CouponCode": "FREESHIP",
+          "TotalPrice": 2621.3
+        },
+        {
+          "OrderID": "ORD200558",
+          "Date": "2024-07-16",
+          "Product": "Phone",
+          "CouponCode": "WINTER15",
+          "TotalPrice": 2512.48
+        },
+        {
+          "OrderID": "ORD200994",
+          "Date": "2024-06-27",
+          "Product": "Tablet",
+          "CouponCode": "WINTER15",
+          "TotalPrice": 2462.6
+        },
+        {
+          "OrderID": "ORD200174",
+          "Date": "2024-04-16",
+          "Product": "Printer",
+          "CouponCode": "SAVE10",
+          "TotalPrice": 2403.24
+        },
+        {
+          "OrderID": "ORD200726",
+          "Date": "2024-10-25",
+          "Product": "Laptop",
+          "CouponCode": "FREESHIP",
+          "TotalPrice": 2332.08
+        },
+        {
+          "OrderID": "ORD201006",
+          "Date": "2024-05-27",
+          "Product": "Tablet",
+          "CouponCode": "SAVE10",
+          "TotalPrice": 2104.9
+        },
+        {
+          "OrderID": "ORD200178",
+          "Date": "2024-04-11",
+          "Product": "Chair",
+          "CouponCode": "SAVE10",
+          "TotalPrice": 2048.24
+        }
+      ]
+    },
+    {
+      "id": "Q06",
+      "section": "B. Filtering with WHERE",
+      "title": "Pattern matching with LIKE and IN",
+      "question": "How do products starting with \"P\" sell when paid by card?",
+      "sql": "SELECT Product, PaymentMethod,\n       COUNT(*)                  AS orders,\n       ROUND(SUM(TotalPrice), 2) AS order_value\nFROM orders\nWHERE Product LIKE 'P%'\n  AND PaymentMethod IN ('Credit Card', 'Debit Card')\nGROUP BY Product, PaymentMethod\nORDER BY order_value DESC;",
+      "rows": 4,
+      "result": [
+        {
+          "Product": "Printer",
+          "PaymentMethod": "Credit Card",
+          "orders": 39,
+          "order_value": 43289.52
+        },
+        {
+          "Product": "Printer",
+          "PaymentMethod": "Debit Card",
+          "orders": 33,
+          "order_value": 33165.09
+        },
+        {
+          "Product": "Phone",
+          "PaymentMethod": "Credit Card",
+          "orders": 35,
+          "order_value": 32317.43
+        },
+        {
+          "Product": "Phone",
+          "PaymentMethod": "Debit Card",
+          "orders": 30,
+          "order_value": 31731.75
+        }
+      ]
+    },
+    {
+      "id": "Q07",
+      "section": "C. GROUP BY and aggregations",
+      "title": "Orders, value and average by product",
+      "question": "Which products bring in the most order value?",
+      "sql": "SELECT Product,\n       COUNT(*)                                                           AS orders,\n       ROUND(SUM(TotalPrice), 2)                                          AS order_value,\n       ROUND(AVG(TotalPrice), 2)                                          AS avg_order_value,\n       ROUND(100.0 * SUM(TotalPrice) / (SELECT SUM(TotalPrice) FROM orders), 1) AS pct_of_value\nFROM orders\nGROUP BY Product\nORDER BY order_value DESC;",
+      "rows": 7,
+      "result": [
+        {
+          "Product": "Chair",
+          "orders": 178,
+          "order_value": 195620.11,
+          "avg_order_value": 1098.99,
+          "pct_of_value": 15.5
+        },
+        {
+          "Product": "Printer",
+          "orders": 181,
+          "order_value": 195612.61,
+          "avg_order_value": 1080.73,
+          "pct_of_value": 15.5
+        },
+        {
+          "Product": "Laptop",
+          "orders": 173,
+          "order_value": 192126.56,
+          "avg_order_value": 1110.56,
+          "pct_of_value": 15.2
+        },
+        {
+          "Product": "Tablet",
+          "orders": 179,
+          "order_value": 186568.95,
+          "avg_order_value": 1042.28,
+          "pct_of_value": 14.8
+        },
+        {
+          "Product": "Monitor",
+          "orders": 163,
+          "order_value": 175651.41,
+          "avg_order_value": 1077.62,
+          "pct_of_value": 13.9
+        },
+        {
+          "Product": "Desk",
+          "orders": 170,
+          "order_value": 167459.93,
+          "avg_order_value": 985.06,
+          "pct_of_value": 13.2
+        },
+        {
+          "Product": "Phone",
+          "orders": 156,
+          "order_value": 151722.39,
+          "avg_order_value": 972.58,
+          "pct_of_value": 12.0
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "section": "C. GROUP BY and aggregations",
+      "title": "Order status mix (percentage contribution)",
+      "question": "How much order value sits in each status?",
+      "sql": "SELECT OrderStatus,\n       COUNT(*)                                                           AS orders,\n       ROUND(SUM(TotalPrice), 2)                                          AS order_value,\n       ROUND(100.0 * SUM(TotalPrice) / (SELECT SUM(TotalPrice) FROM orders), 1) AS pct_of_value\nFROM orders\nGROUP BY OrderStatus\nORDER BY order_value DESC;",
+      "rows": 5,
+      "result": [
+        {
+          "OrderStatus": "Cancelled",
+          "orders": 250,
+          "order_value": 276396.21,
+          "pct_of_value": 21.9
+        },
+        {
+          "OrderStatus": "Pending",
+          "orders": 237,
+          "order_value": 256328.15,
+          "pct_of_value": 20.3
+        },
+        {
+          "OrderStatus": "Shipped",
+          "orders": 235,
+          "order_value": 246159.58,
+          "pct_of_value": 19.5
+        },
+        {
+          "OrderStatus": "Returned",
+          "orders": 247,
+          "order_value": 243277.7,
+          "pct_of_value": 19.2
+        },
+        {
+          "OrderStatus": "Delivered",
+          "orders": 231,
+          "order_value": 242600.32,
+          "pct_of_value": 19.2
+        }
+      ]
+    },
+    {
+      "id": "Q09",
+      "section": "C. GROUP BY and aggregations",
+      "title": "Revenue at risk (CASE grouping)",
+      "question": "What share of order value is delivered, still in flight, or lost to cancellations and returns?",
+      "sql": "SELECT CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN 'At risk (Cancelled or Returned)'\n            WHEN OrderStatus = 'Delivered'                THEN 'Delivered'\n            ELSE 'In flight (Pending or Shipped)' END                      AS status_group,\n       COUNT(*)                                                           AS orders,\n       ROUND(SUM(TotalPrice), 2)                                          AS order_value,\n       ROUND(100.0 * SUM(TotalPrice) / (SELECT SUM(TotalPrice) FROM orders), 1) AS pct_of_value\nFROM orders\nGROUP BY status_group\nORDER BY order_value DESC;",
+      "rows": 3,
+      "result": [
+        {
+          "status_group": "At risk (Cancelled or Returned)",
+          "orders": 497,
+          "order_value": 519673.91,
+          "pct_of_value": 41.1
+        },
+        {
+          "status_group": "In flight (Pending or Shipped)",
+          "orders": 472,
+          "order_value": 502487.73,
+          "pct_of_value": 39.7
+        },
+        {
+          "status_group": "Delivered",
+          "orders": 231,
+          "order_value": 242600.32,
+          "pct_of_value": 19.2
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "section": "C. GROUP BY and aggregations",
+      "title": "Payment method performance",
+      "question": "Does the way customers pay relate to order value?",
+      "sql": "SELECT PaymentMethod,\n       COUNT(*)                  AS orders,\n       ROUND(SUM(TotalPrice), 2) AS order_value,\n       ROUND(AVG(TotalPrice), 2) AS avg_order_value\nFROM orders\nGROUP BY PaymentMethod\nORDER BY order_value DESC;",
+      "rows": 5,
+      "result": [
+        {
+          "PaymentMethod": "Credit Card",
+          "orders": 234,
+          "order_value": 263847.63,
+          "avg_order_value": 1127.55
+        },
+        {
+          "PaymentMethod": "Online",
+          "orders": 258,
+          "order_value": 262442.94,
+          "avg_order_value": 1017.22
+        },
+        {
+          "PaymentMethod": "Cash",
+          "orders": 246,
+          "order_value": 259786.29,
+          "avg_order_value": 1056.04
+        },
+        {
+          "PaymentMethod": "Gift Card",
+          "orders": 230,
+          "order_value": 246323.92,
+          "avg_order_value": 1070.97
+        },
+        {
+          "PaymentMethod": "Debit Card",
+          "orders": 232,
+          "order_value": 232361.18,
+          "avg_order_value": 1001.56
+        }
+      ]
+    },
+    {
+      "id": "Q11",
+      "section": "C. GROUP BY and aggregations",
+      "title": "Referral source performance",
+      "question": "Which marketing channels bring orders and value?",
+      "sql": "SELECT ReferralSource,\n       COUNT(*)                  AS orders,\n       ROUND(SUM(TotalPrice), 2) AS order_value,\n       ROUND(AVG(TotalPrice), 2) AS avg_order_value\nFROM orders\nGROUP BY ReferralSource\nORDER BY order_value DESC;",
+      "rows": 5,
+      "result": [
+        {
+          "ReferralSource": "Instagram",
+          "orders": 259,
+          "order_value": 275285.45,
+          "avg_order_value": 1062.88
+        },
+        {
+          "ReferralSource": "Email",
+          "orders": 250,
+          "order_value": 261808.55,
+          "avg_order_value": 1047.23
+        },
+        {
+          "ReferralSource": "Google",
+          "orders": 241,
+          "order_value": 250441.48,
+          "avg_order_value": 1039.18
+        },
+        {
+          "ReferralSource": "Facebook",
+          "orders": 228,
+          "order_value": 250410.9,
+          "avg_order_value": 1098.29
+        },
+        {
+          "ReferralSource": "Referral",
+          "orders": 222,
+          "order_value": 226815.58,
+          "avg_order_value": 1021.69
+        }
+      ]
+    },
+    {
+      "id": "Q12",
+      "section": "C. GROUP BY and aggregations",
+      "title": "Coupon use versus no coupon",
+      "question": "Do orders with a coupon have a different average value?",
+      "sql": "SELECT CASE WHEN CouponCode = 'No Coupon' THEN 'No coupon' ELSE 'Coupon used' END AS coupon_use,\n       COUNT(*)                  AS orders,\n       ROUND(SUM(TotalPrice), 2) AS order_value,\n       ROUND(AVG(TotalPrice), 2) AS avg_order_value\nFROM orders\nGROUP BY coupon_use\nORDER BY orders DESC;",
+      "rows": 2,
+      "result": [
+        {
+          "coupon_use": "Coupon used",
+          "orders": 891,
+          "order_value": 942360.55,
+          "avg_order_value": 1057.64
+        },
+        {
+          "coupon_use": "No coupon",
+          "orders": 309,
+          "order_value": 322401.41,
+          "avg_order_value": 1043.37
+        }
+      ]
+    },
+    {
+      "id": "Q13",
+      "section": "D. Time trends",
+      "title": "Yearly orders and value",
+      "question": "How does each calendar year compare? (2025 covers January to June only)",
+      "sql": "SELECT strftime('%Y', Date)      AS year,\n       COUNT(*)                  AS orders,\n       ROUND(SUM(TotalPrice), 2) AS order_value,\n       ROUND(AVG(TotalPrice), 2) AS avg_order_value\nFROM orders\nGROUP BY year\nORDER BY year;",
+      "rows": 3,
+      "result": [
+        {
+          "year": "2023",
+          "orders": 510,
+          "order_value": 552643.24,
+          "avg_order_value": 1083.61
+        },
+        {
+          "year": "2024",
+          "orders": 459,
+          "order_value": 480235.87,
+          "avg_order_value": 1046.27
+        },
+        {
+          "year": "2025",
+          "orders": 231,
+          "order_value": 231882.85,
+          "avg_order_value": 1003.82
+        }
+      ]
+    },
+    {
+      "id": "Q14",
+      "section": "D. Time trends",
+      "title": "First-half revenue, year over year (CTE + window function)",
+      "question": "Is like-for-like (Jan to Jun) revenue growing or shrinking?",
+      "sql": "WITH h1 AS (\n    SELECT strftime('%Y', Date) AS year,\n           COUNT(*)             AS orders,\n           SUM(TotalPrice)      AS revenue\n    FROM orders\n    WHERE CAST(strftime('%m', Date) AS INTEGER) <= 6\n    GROUP BY strftime('%Y', Date)\n)\nSELECT year,\n       orders,\n       ROUND(revenue, 2) AS revenue,\n       ROUND(100.0 * (revenue - LAG(revenue) OVER (ORDER BY year)) / LAG(revenue) OVER (ORDER BY year), 1) AS yoy_pct\nFROM h1\nORDER BY year;",
+      "rows": 3,
+      "result": [
+        {
+          "year": "2023",
+          "orders": 252,
+          "revenue": 286501.52,
+          "yoy_pct": null
+        },
+        {
+          "year": "2024",
+          "orders": 237,
+          "revenue": 257059.34,
+          "yoy_pct": -10.3
+        },
+        {
+          "year": "2025",
+          "orders": 231,
+          "revenue": 231882.85,
+          "yoy_pct": -9.8
+        }
+      ]
+    },
+    {
+      "id": "Q15",
+      "section": "D. Time trends",
+      "title": "Monthly orders and value",
+      "question": "What does the month-by-month pattern look like?",
+      "sql": "SELECT strftime('%Y-%m', Date)   AS month,\n       COUNT(*)                  AS orders,\n       ROUND(SUM(TotalPrice), 2) AS order_value\nFROM orders\nGROUP BY month\nORDER BY month;",
+      "rows": 30,
+      "result": [
+        {
+          "month": "2023-01",
+          "orders": 47,
+          "order_value": 56685.75
+        },
+        {
+          "month": "2023-02",
+          "orders": 37,
+          "order_value": 40117.66
+        },
+        {
+          "month": "2023-03",
+          "orders": 43,
+          "order_value": 48609.37
+        },
+        {
+          "month": "2023-04",
+          "orders": 31,
+          "order_value": 27751.71
+        },
+        {
+          "month": "2023-05",
+          "orders": 49,
+          "order_value": 63836.84
+        },
+        {
+          "month": "2023-06",
+          "orders": 45,
+          "order_value": 49500.19
+        },
+        {
+          "month": "2023-07",
+          "orders": 44,
+          "order_value": 42820.66
+        },
+        {
+          "month": "2023-08",
+          "orders": 51,
+          "order_value": 54352.14
+        },
+        {
+          "month": "2023-09",
+          "orders": 29,
+          "order_value": 29526.67
+        },
+        {
+          "month": "2023-10",
+          "orders": 47,
+          "order_value": 52607.85
+        },
+        {
+          "month": "2023-11",
+          "orders": 41,
+          "order_value": 43079.67
+        },
+        {
+          "month": "2023-12",
+          "orders": 46,
+          "order_value": 43754.73
+        },
+        {
+          "month": "2024-01",
+          "orders": 32,
+          "order_value": 38528.08
+        },
+        {
+          "month": "2024-02",
+          "orders": 32,
+          "order_value": 36909.57
+        },
+        {
+          "month": "2024-03",
+          "orders": 36,
+          "order_value": 36030.9
+        },
+        {
+          "month": "2024-04",
+          "orders": 50,
+          "order_value": 49613.14
+        },
+        {
+          "month": "2024-05",
+          "orders": 34,
+          "order_value": 27909.11
+        },
+        {
+          "month": "2024-06",
+          "orders": 53,
+          "order_value": 68068.54
+        },
+        {
+          "month": "2024-07",
+          "orders": 43,
+          "order_value": 42963.98
+        },
+        {
+          "month": "2024-08",
+          "orders": 28,
+          "order_value": 31991.07
+        },
+        {
+          "month": "2024-09",
+          "orders": 44,
+          "order_value": 39794.98
+        },
+        {
+          "month": "2024-10",
+          "orders": 31,
+          "order_value": 37226.97
+        },
+        {
+          "month": "2024-11",
+          "orders": 35,
+          "order_value": 32413.76
+        },
+        {
+          "month": "2024-12",
+          "orders": 41,
+          "order_value": 38785.77
+        },
+        {
+          "month": "2025-01",
+          "orders": 27,
+          "order_value": 29099.4
+        },
+        {
+          "month": "2025-02",
+          "orders": 37,
+          "order_value": 35317.55
+        },
+        {
+          "month": "2025-03",
+          "orders": 49,
+          "order_value": 39200.66
+        },
+        {
+          "month": "2025-04",
+          "orders": 32,
+          "order_value": 31821.2
+        },
+        {
+          "month": "2025-05",
+          "orders": 37,
+          "order_value": 43396.64
+        },
+        {
+          "month": "2025-06",
+          "orders": 49,
+          "order_value": 53047.4
+        }
+      ]
+    },
+    {
+      "id": "Q16",
+      "section": "E. HAVING and subqueries",
+      "title": "Products with an above-average cancel/return rate",
+      "question": "Which products lose more orders than the business overall?",
+      "sql": "SELECT Product,\n       COUNT(*) AS orders,\n       SUM(CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN 1 ELSE 0 END) AS at_risk_orders,\n       ROUND(100.0 * SUM(CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN 1 ELSE 0 END) / COUNT(*), 1) AS at_risk_pct\nFROM orders\nGROUP BY Product\nHAVING 100.0 * SUM(CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN 1 ELSE 0 END) / COUNT(*)\n       > (SELECT 100.0 * SUM(CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN 1 ELSE 0 END) / COUNT(*) FROM orders)\nORDER BY at_risk_pct DESC;",
+      "rows": 3,
+      "result": [
+        {
+          "Product": "Monitor",
+          "orders": 163,
+          "at_risk_orders": 71,
+          "at_risk_pct": 43.6
+        },
+        {
+          "Product": "Tablet",
+          "orders": 179,
+          "at_risk_orders": 77,
+          "at_risk_pct": 43.0
+        },
+        {
+          "Product": "Laptop",
+          "orders": 173,
+          "at_risk_orders": 74,
+          "at_risk_pct": 42.8
+        }
+      ]
+    },
+    {
+      "id": "Q17",
+      "section": "E. HAVING and subqueries",
+      "title": "Repeat customers",
+      "question": "Which customers ordered more than once?",
+      "sql": "SELECT CustomerID,\n       COUNT(*)                  AS orders,\n       ROUND(SUM(TotalPrice), 2) AS total_value,\n       MIN(Date)                 AS first_order,\n       MAX(Date)                 AS last_order\nFROM orders\nGROUP BY CustomerID\nHAVING COUNT(*) > 1\nORDER BY total_value DESC;",
+      "rows": 11,
+      "result": [
+        {
+          "CustomerID": "C38840",
+          "orders": 2,
+          "total_value": 5723.23,
+          "first_order": "2023-06-07",
+          "last_order": "2024-06-08"
+        },
+        {
+          "CustomerID": "C97593",
+          "orders": 2,
+          "total_value": 2855.22,
+          "first_order": "2023-05-03",
+          "last_order": "2024-02-22"
+        },
+        {
+          "CustomerID": "C98474",
+          "orders": 2,
+          "total_value": 2175.34,
+          "first_order": "2023-03-27",
+          "last_order": "2024-06-03"
+        },
+        {
+          "CustomerID": "C70659",
+          "orders": 2,
+          "total_value": 1853.96,
+          "first_order": "2023-08-20",
+          "last_order": "2025-03-01"
+        },
+        {
+          "CustomerID": "C94569",
+          "orders": 2,
+          "total_value": 1675.35,
+          "first_order": "2024-03-23",
+          "last_order": "2024-06-21"
+        },
+        {
+          "CustomerID": "C46651",
+          "orders": 2,
+          "total_value": 1360.89,
+          "first_order": "2023-08-01",
+          "last_order": "2024-03-20"
+        },
+        {
+          "CustomerID": "C35852",
+          "orders": 2,
+          "total_value": 1248.39,
+          "first_order": "2024-03-05",
+          "last_order": "2025-03-02"
+        },
+        {
+          "CustomerID": "C14847",
+          "orders": 2,
+          "total_value": 1097.81,
+          "first_order": "2023-01-01",
+          "last_order": "2024-12-19"
+        },
+        {
+          "CustomerID": "C91155",
+          "orders": 2,
+          "total_value": 704.82,
+          "first_order": "2023-07-17",
+          "last_order": "2024-09-08"
+        },
+        {
+          "CustomerID": "C21191",
+          "orders": 2,
+          "total_value": 647.77,
+          "first_order": "2024-04-11",
+          "last_order": "2025-05-16"
+        },
+        {
+          "CustomerID": "C56969",
+          "orders": 2,
+          "total_value": 193.0,
+          "first_order": "2023-06-29",
+          "last_order": "2024-01-09"
+        }
+      ]
+    },
+    {
+      "id": "Q18",
+      "section": "E. HAVING and subqueries",
+      "title": "Orders above the average order value",
+      "question": "How many orders are larger than the \"average\" order?",
+      "sql": "SELECT COUNT(*)                                                         AS orders_above_average,\n       ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM orders), 1)       AS pct_of_all_orders,\n       ROUND((SELECT AVG(TotalPrice) FROM orders), 2)                   AS average_order_value\nFROM orders\nWHERE TotalPrice > (SELECT AVG(TotalPrice) FROM orders);",
+      "rows": 1,
+      "result": [
+        {
+          "orders_above_average": 491,
+          "pct_of_all_orders": 40.9,
+          "average_order_value": 1053.97
+        }
+      ]
+    },
+    {
+      "id": "Q19",
+      "section": "E. HAVING and subqueries",
+      "title": "Median order value in pure SQL",
+      "question": "What is the typical (median) order value? SQLite has no MEDIAN(), so the middle row(s) are picked.",
+      "sql": "SELECT ROUND(AVG(TotalPrice), 2) AS median_order_value\nFROM (\n    SELECT TotalPrice\n    FROM orders\n    ORDER BY TotalPrice\n    LIMIT 2 - (SELECT COUNT(*) FROM orders) % 2\n    OFFSET (SELECT (COUNT(*) - 1) / 2 FROM orders)\n);",
+      "rows": 1,
+      "result": [
+        {
+          "median_order_value": 823.62
+        }
+      ]
+    },
+    {
+      "id": "Q20",
+      "section": "F. Business insight",
+      "title": "Cancelled or returned orders by year",
+      "question": "Is the cancel/return problem getting better or worse?",
+      "sql": "SELECT strftime('%Y', Date) AS year,\n       COUNT(*)             AS orders,\n       SUM(CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN 1 ELSE 0 END)                    AS at_risk_orders,\n       ROUND(100.0 * SUM(CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN 1 ELSE 0 END) / COUNT(*), 1) AS at_risk_pct,\n       ROUND(SUM(CASE WHEN OrderStatus IN ('Cancelled', 'Returned') THEN TotalPrice ELSE 0 END), 2) AS at_risk_value\nFROM orders\nGROUP BY year\nORDER BY year;",
+      "rows": 3,
+      "result": [
+        {
+          "year": "2023",
+          "orders": 510,
+          "at_risk_orders": 209,
+          "at_risk_pct": 41.0,
+          "at_risk_value": 222095.51
+        },
+        {
+          "year": "2024",
+          "orders": 459,
+          "at_risk_orders": 180,
+          "at_risk_pct": 39.2,
+          "at_risk_value": 179895.94
+        },
+        {
+          "year": "2025",
+          "orders": 231,
+          "at_risk_orders": 108,
+          "at_risk_pct": 46.8,
+          "at_risk_value": 117682.46
+        }
+      ]
+    },
+    {
+      "id": "Q21",
+      "section": "F. Business insight",
+      "title": "What changed in the average order: quantity, price or big orders?",
+      "question": "Did customers buy fewer units, pay lower prices, or place fewer large ($2,500+) orders over time?",
+      "sql": "SELECT strftime('%Y', Date) AS year,\n       COUNT(*)             AS orders,\n       ROUND(AVG(Quantity), 2)   AS avg_quantity,\n       ROUND(AVG(UnitPrice), 2)  AS avg_unit_price,\n       ROUND(AVG(TotalPrice), 2) AS avg_order_value,\n       SUM(CASE WHEN TotalPrice >= 2500 THEN 1 ELSE 0 END) AS large_orders,\n       ROUND(100.0 * SUM(CASE WHEN TotalPrice >= 2500 THEN 1 ELSE 0 END) / COUNT(*), 1) AS large_order_pct\nFROM orders\nGROUP BY year\nORDER BY year;",
+      "rows": 3,
+      "result": [
+        {
+          "year": "2023",
+          "orders": 510,
+          "avg_quantity": 2.99,
+          "avg_unit_price": 358.68,
+          "avg_order_value": 1083.61,
+          "large_orders": 43,
+          "large_order_pct": 8.4
+        },
+        {
+          "year": "2024",
+          "orders": 459,
+          "avg_quantity": 2.94,
+          "avg_unit_price": 352.24,
+          "avg_order_value": 1046.27,
+          "large_orders": 37,
+          "large_order_pct": 8.1
+        },
+        {
+          "year": "2025",
+          "orders": 231,
+          "avg_quantity": 2.86,
+          "avg_unit_price": 359.7,
+          "avg_order_value": 1003.82,
+          "large_orders": 14,
+          "large_order_pct": 6.1
+        }
+      ]
+    }
+  ],
+  "verification": [
+    {
+      "check": "Total orders",
+      "sql_result": 1200,
+      "pandas_result": 1200,
+      "match": true
+    },
+    {
+      "check": "Unique customers",
+      "sql_result": 1189,
+      "pandas_result": 1189,
+      "match": true
+    },
+    {
+      "check": "Total order value",
+      "sql_result": 1264761.96,
+      "pandas_result": 1264761.96,
+      "match": true
+    },
+    {
+      "check": "Average order value",
+      "sql_result": 1053.97,
+      "pandas_result": 1053.97,
+      "match": true
+    },
+    {
+      "check": "Duplicate OrderIDs (rows returned)",
+      "sql_result": 0,
+      "pandas_result": 0,
+      "match": true
+    },
+    {
+      "check": "Orders above IQR fence ($3,330.41)",
+      "sql_result": 8,
+      "pandas_result": 8,
+      "match": true
+    },
+    {
+      "check": "Repeat customers",
+      "sql_result": 11,
+      "pandas_result": 11,
+      "match": true
+    },
+    {
+      "check": "Cancelled + returned order value",
+      "sql_result": 519673.91,
+      "pandas_result": 519673.91,
+      "match": true
+    },
+    {
+      "check": "Cancelled + returned orders",
+      "sql_result": 497,
+      "pandas_result": 497,
+      "match": true
+    },
+    {
+      "check": "Median order value",
+      "sql_result": 823.62,
+      "pandas_result": 823.62,
+      "match": true
+    },
+    {
+      "check": "Orders above average",
+      "sql_result": 491,
+      "pandas_result": 491,
+      "match": true
+    },
+    {
+      "check": "H1 2023 revenue",
+      "sql_result": 286501.52,
+      "pandas_result": 286501.52,
+      "match": true
+    },
+    {
+      "check": "H1 2024 revenue",
+      "sql_result": 257059.34,
+      "pandas_result": 257059.34,
+      "match": true
+    },
+    {
+      "check": "H1 2025 revenue",
+      "sql_result": 231882.85,
+      "pandas_result": 231882.85,
+      "match": true
+    }
+  ],
+  "all_checks_pass": true,
+  "sqlite_version": "3.45.1"
+}
